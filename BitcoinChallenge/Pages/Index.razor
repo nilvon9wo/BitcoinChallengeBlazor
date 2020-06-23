@@ -20,10 +20,20 @@
     protected override async Task OnInitializedAsync() {
         try {
             this.Price = await this.fetchPrice();
+            this.startPeriodicRefresh();
         }
         catch (Exception e) {
             await JSRuntime.InvokeAsync<object>("alert", e.ToString());
         }
+    }
+
+    private void startPeriodicRefresh() {
+        TimeSpan startTimeSpan = TimeSpan.Zero;
+        TimeSpan periodTimeSpan = TimeSpan.FromSeconds(10);
+
+        var timer = new System.Threading.Timer(async (e) => {
+            this.Price = await this.fetchPrice();
+        }, null, startTimeSpan, periodTimeSpan);
     }
 
     private async Task<decimal> fetchPrice() {
@@ -31,6 +41,7 @@
         priceResponse.EnsureSuccessStatusCode();
         string responseBody = await priceResponse.Content.ReadAsStringAsync();
         BitcoinPriceWrapper bitcoinPriceWrapper = JsonConvert.DeserializeObject<BitcoinPriceWrapper>(responseBody);
+        Console.WriteLine("### " + bitcoinPriceWrapper.Data.Amount);
         return decimal.Parse(bitcoinPriceWrapper.Data.Amount);
     }
 }
