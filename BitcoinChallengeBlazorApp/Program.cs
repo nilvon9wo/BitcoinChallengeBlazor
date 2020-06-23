@@ -11,7 +11,7 @@ using Microsoft.Extensions.Logging;
 namespace BitcoinChallengeBlazorApp {
     public class Program {
         public static async Task Main(string[] args) {
-            var builder = WebAssemblyHostBuilder.CreateDefault(args);
+            WebAssemblyHostBuilder builder = WebAssemblyHostBuilder.CreateDefault(args);
             builder.RootComponents.Add<App>("app");
             AppSettings appSettings = builder.Configuration.Get<AppSettings>();
             builder.Services.AddSingleton<BitcoinChallengeSettings>(new BitcoinChallengeSettings(appSettings));
