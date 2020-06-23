@@ -1,0 +1,50 @@
+﻿@page "/"
+@using System.Globalization;
+@using System.Net.Http;
+@using System.Threading;
+@using BitcoinChallenge.Entities;
+@using Newtonsoft.Json;
+@inject BitcoinChallengeSettings BitcoinSettings;
+@inject HttpClient Http;
+@inject IJSRuntime JSRuntime;
+
+<div class="card" style="width: 20rem;">
+    <h5 class="card-title">Current price of one bitcoin</h5>
+    <p>@FormattedPrice</p>
+</div>
+
+@code{
+    private const string BitcoinPriceProvider = "https://api.coinbase.com/v2/prices/spot?currency=EUR";
+
+    private static readonly CultureInfo cultureInfo = new CultureInfo("de-DE", false);
+
+    protected decimal Price { get; set; }
+    protected string FormattedPrice => this.Price.ToString("c", cultureInfo);
+
+    protected override async Task OnInitializedAsync() {
+        try {
+            this.Price = await this.fetchPrice();
+            this.startPeriodicRefresh();
+        }
+        catch (Exception e) {
+            await JSRuntime.InvokeAsync<object>("alert", e.ToString());
+        }
+    }
+
+    private void startPeriodicRefresh() {
+        TimeSpan startTimeSpan = TimeSpan.Zero;
+        TimeSpan periodTimeSpan = TimeSpan.FromSeconds(BitcoinSettings.RefreshTimeInSeconds);
+
+        var timer = new System.Threading.Timer(async (e) => {
+            this.Price = await this.fetchPrice();
+        }, null, startTimeSpan, periodTimeSpan);
+    }
+
+    private async Task<decimal> fetchPrice() {
+        HttpResponseMessage priceResponse = await Http.GetAsync(BitcoinPriceProvider);
+        priceResponse.EnsureSuccessStatusCode();
+        string responseBody = await priceResponse.Content.ReadAsStringAsync();
+        BitcoinPriceWrapper bitcoinPriceWrapper = JsonConvert.DeserializeObject<BitcoinPriceWrapper>(responseBody);
+        return decimal.Parse(bitcoinPriceWrapper.Data.Amount);
+    }
+}
