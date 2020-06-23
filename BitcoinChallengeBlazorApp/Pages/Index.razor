@@ -22,7 +22,7 @@
 
     protected override async Task OnInitializedAsync() {
         try {
-            //this.Price = await this.fetchPrice();
+            this.Price = await this.fetchPrice();
             this.startPeriodicRefresh();
         }
         catch (Exception e) {

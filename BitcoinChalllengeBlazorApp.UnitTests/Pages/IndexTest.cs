@@ -4,8 +4,7 @@ using Microsoft.AspNetCore.Components.Testing;
 using Microsoft.JSInterop;
 using Moq;
 using Nancy.Json;
-using RichardSzalay.MockHttp;
-using System;
+using System.Globalization;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -20,18 +19,26 @@ namespace BitcoinChalllengeBlazorApp.UnitTests {
         readonly int testRefreshRate = 10;
 
         [Fact]
-        public void Test1() {
+        public void ItFetchesPriceAndSetsTheValue() {
             // Arrange
             _ = this.SetMockRuntime();
-            _ = this.CreateMockHttpClientAsync();
+            MockBitcoinMessageHandler mockHttpMessageHandler = this.CreateMockHttpClientAsync();
             _ = this.CreateSettings();
 
 
             // Act
             RenderedComponent<Index> componentUnderTest = this.host.AddComponent<Index>();
 
-            // Assert            
-            Assert.Equal($"{this.testAmount:n2}", componentUnderTest.Find("p").InnerText);
+            // Assert   
+            string displayAmount = componentUnderTest.Find("p").InnerText.Split(new char[] { ' ' })[0];
+            NumberStyles style = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands;
+            CultureInfo provider = new CultureInfo("de-DE");
+
+            decimal resultAmount = decimal.Parse(displayAmount, style, provider);
+            decimal expectedAmount = decimal.Parse($"{this.testAmount:n2}");
+            Assert.Equal(expectedAmount, resultAmount);
+
+            Assert.Equal(2, MockBitcoinMessageHandler.requestCount);
         }
 
         public Mock<IJSRuntime> SetMockRuntime() {
@@ -40,20 +47,19 @@ namespace BitcoinChalllengeBlazorApp.UnitTests {
             return jsRuntimeMock;
         }
 
-        public HttpClient CreateMockHttpClientAsync() {
-            MockHttpMessageHandler mockHttpMessageHandler = new MockHttpMessageHandler();
-            mockHttpMessageHandler.When("https://api.coinbase.com/v2/prices/spot?currency=EUR")
-                .Respond(this.CreateMockResponse);
-
+        private MockBitcoinMessageHandler CreateMockHttpClientAsync() {
+            MockBitcoinMessageHandler mockHttpMessageHandler = new MockBitcoinMessageHandler(this.CreateMockResponse);
             HttpClient httpClient = new HttpClient(mockHttpMessageHandler);
             this.host.AddService(httpClient);
-            return httpClient;
+            return mockHttpMessageHandler;
         }
 
         private Task<HttpResponseMessage> CreateMockResponse() {
-            BitcoinPriceWrapper bitcoinPriceWrapper = new BitcoinPriceWrapper();
-            bitcoinPriceWrapper.Data = new BitcoinPrice();
-            bitcoinPriceWrapper.Data.Amount = this.testAmount.ToString();
+            BitcoinPriceWrapper bitcoinPriceWrapper = new BitcoinPriceWrapper {
+                Data = new BitcoinPrice {
+                    Amount = this.testAmount.ToString()
+                }
+            };
 
             HttpResponseMessage mockResponse = new HttpResponseMessage(HttpStatusCode.OK) {
                 Content = new StringContent(new JavaScriptSerializer().Serialize(bitcoinPriceWrapper))

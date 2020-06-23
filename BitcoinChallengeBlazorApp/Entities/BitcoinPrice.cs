@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace BitcoinChallenge.Entities {
+﻿namespace BitcoinChallenge.Entities {
     public class BitcoinPrice {
         public string Base { get; set; }
         public string Currency { get; set; }

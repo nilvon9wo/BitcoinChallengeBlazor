@@ -51,7 +51,7 @@ namespace Microsoft.AspNetCore.Components.Testing
         [SuppressMessage("Usage", "BL0006:Do not use RenderTree types", Justification = "<Pending>")]
         public static Task TriggerEventAsync(this HtmlNode element, string attributeName, EventArgs eventArgs)
         {
-            var eventHandlerIdString = element.GetAttributeValue(attributeName, string.Empty);
+            string eventHandlerIdString = element.GetAttributeValue(attributeName, string.Empty);
             if (string.IsNullOrEmpty(eventHandlerIdString))
             {
                 throw new ArgumentException($"The element does not have an event handler for the event '{attributeName}'.");

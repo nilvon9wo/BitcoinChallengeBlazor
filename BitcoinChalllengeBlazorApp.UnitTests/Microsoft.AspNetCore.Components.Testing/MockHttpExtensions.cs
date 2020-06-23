@@ -12,8 +12,8 @@ namespace Microsoft.AspNetCore.Components.Testing
     {
         public static MockHttpMessageHandler AddMockHttp(this TestHost host)
         {
-            var mockHttp = new MockHttpMessageHandler();
-            var httpClient = mockHttp.ToHttpClient();
+            MockHttpMessageHandler mockHttp = new MockHttpMessageHandler();
+            HttpClient httpClient = mockHttp.ToHttpClient();
             httpClient.BaseAddress = new Uri("http://example.com");
             host.AddService(httpClient);
             return mockHttp;
