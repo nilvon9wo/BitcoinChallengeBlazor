@@ -6,5 +6,6 @@ using System.Threading.Tasks;
 namespace BitcoinChallenge {
     public class AppSettings {
         public string LiffId { get; set; }
+        public int RefreshTimeInSeconds { get; set; }
     }
 }

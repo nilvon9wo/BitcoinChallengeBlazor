@@ -2,14 +2,15 @@
 @using System.Net.Http
 @using BitcoinChallenge.Entities;
 @using Newtonsoft.Json;
+@inject BitcoinChallengeSettings BitcoinSettings;
 @inject HttpClient Http
 @inject IJSRuntime JSRuntime
 @inject ILiffClient Liff
 
-    <div class="card" style="width: 20rem;">
-        <h5 class="card-title">Current price of one bitcoin</h5>
-        <p>@FormattedPrice</p>
-    </div>
+<div class="card" style="width: 20rem;">
+    <h5 class="card-title">Current price of one bitcoin</h5>
+    <p>@FormattedPrice</p>
+</div>
 
 @code{
     private const string BitcoinPriceProvider = "https://api.coinbase.com/v2/prices/spot?currency=EUR";
@@ -29,7 +30,7 @@
 
     private void startPeriodicRefresh() {
         TimeSpan startTimeSpan = TimeSpan.Zero;
-        TimeSpan periodTimeSpan = TimeSpan.FromSeconds(10);
+        TimeSpan periodTimeSpan = TimeSpan.FromSeconds(BitcoinSettings.RefreshTimeInSeconds);
 
         var timer = new System.Threading.Timer(async (e) => {
             this.Price = await this.fetchPrice();

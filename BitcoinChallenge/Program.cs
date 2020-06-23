@@ -15,6 +15,7 @@ namespace BitcoinChallenge {
             builder.Services.AddSingleton(new HttpClient {
                 BaseAddress = new Uri(builder.HostEnvironment.BaseAddress)
             });
+            builder.Services.AddSingleton<BitcoinChallengeSettings>(new BitcoinChallengeSettings(appSettings));
             builder.Services.AddSingleton<ILiffClient>(new LiffClient(appSettings.LiffId));
             builder.Services.AddTransient(serviceType => new HttpClient {
                 BaseAddress = new Uri(builder.HostEnvironment.BaseAddress)
@@ -22,6 +23,5 @@ namespace BitcoinChallenge {
             WebAssemblyHost host = builder.Build();
             await host.RunAsync();
         }
-
     }
 }
