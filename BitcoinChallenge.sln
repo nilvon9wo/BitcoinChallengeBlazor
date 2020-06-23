@@ -3,8 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30204.135
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BitcoinChallengeLiffApp", "BitcoinChallenge\BitcoinChallengeLiffApp.csproj", "{CD8F46A4-76B0-4A55-AF5D-0933344C52C0}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BitcoinChallengeBlazorApp", "BitcoinChallengeBlazorApp\BitcoinChallengeBlazorApp.csproj", "{B2891C76-FC48-478A-BE5D-D5E53753342A}"
 EndProject
 Global
@@ -13,10 +11,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{CD8F46A4-76B0-4A55-AF5D-0933344C52C0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{CD8F46A4-76B0-4A55-AF5D-0933344C52C0}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{CD8F46A4-76B0-4A55-AF5D-0933344C52C0}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{CD8F46A4-76B0-4A55-AF5D-0933344C52C0}.Release|Any CPU.Build.0 = Release|Any CPU
 		{B2891C76-FC48-478A-BE5D-D5E53753342A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{B2891C76-FC48-478A-BE5D-D5E53753342A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B2891C76-FC48-478A-BE5D-D5E53753342A}.Release|Any CPU.ActiveCfg = Release|Any CPU
