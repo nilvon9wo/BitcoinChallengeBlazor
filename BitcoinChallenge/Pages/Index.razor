@@ -6,15 +6,16 @@
 @inject IJSRuntime JSRuntime
 @inject ILiffClient Liff
 
-<div class="card" style="width: 20rem;">
-    <h5 class="card-title">Current price of one bitcoin</h5>
-    <p class="card-text">@Price EUR</p>
-</div>
+    <div class="card" style="width: 20rem;">
+        <h5 class="card-title">Current price of one bitcoin</h5>
+        <p>@FormattedPrice</p>
+    </div>
 
 @code{
     private const string BitcoinPriceProvider = "https://api.coinbase.com/v2/prices/spot?currency=EUR";
 
     protected decimal Price { get; set; }
+    protected string FormattedPrice => string.Format("€{0:N2}", this.Price);
 
     protected override async Task OnInitializedAsync() {
         try {
