@@ -1,5 +1,7 @@
 ﻿@page "/"
-@using System.Net.Http
+@using System.Globalization;
+@using System.Net.Http;
+@using System.Threading; 
 @using BitcoinChallenge.Entities;
 @using Newtonsoft.Json;
 @inject BitcoinChallengeSettings BitcoinSettings;
@@ -15,8 +17,10 @@
 @code{
     private const string BitcoinPriceProvider = "https://api.coinbase.com/v2/prices/spot?currency=EUR";
 
+    private static readonly CultureInfo cultureInfo = new CultureInfo("de-DE", false);
+
     protected decimal Price { get; set; }
-    protected string FormattedPrice => string.Format("€{0:N2}", this.Price);
+    protected string FormattedPrice => this.Price.ToString("c", cultureInfo);
 
     protected override async Task OnInitializedAsync() {
         try {
@@ -42,7 +46,6 @@
         priceResponse.EnsureSuccessStatusCode();
         string responseBody = await priceResponse.Content.ReadAsStringAsync();
         BitcoinPriceWrapper bitcoinPriceWrapper = JsonConvert.DeserializeObject<BitcoinPriceWrapper>(responseBody);
-        Console.WriteLine("### " + bitcoinPriceWrapper.Data.Amount);
         return decimal.Parse(bitcoinPriceWrapper.Data.Amount);
     }
 }
