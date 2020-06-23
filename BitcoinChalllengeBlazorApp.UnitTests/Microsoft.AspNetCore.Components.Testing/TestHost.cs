@@ -14,38 +14,36 @@ namespace Microsoft.AspNetCore.Components.Testing
 
         public TestHost()
         {
-            _serviceProvider = new Lazy<IServiceProvider>(() =>
-            {
-                return _serviceCollection.BuildServiceProvider();
-            });
+            this._serviceProvider = new Lazy<IServiceProvider>(() => this._serviceCollection.BuildServiceProvider());
 
-            _renderer = new Lazy<TestRenderer>(() =>
+            this._renderer = new Lazy<TestRenderer>(() =>
             {
-                ILoggerFactory loggerFactory = Services.GetService<ILoggerFactory>() ?? new NullLoggerFactory();
-                return new TestRenderer(Services, loggerFactory);
+                ILoggerFactory loggerFactory = this.Services.GetService<ILoggerFactory>() ?? new NullLoggerFactory();
+                return new TestRenderer(this.Services, loggerFactory);
             });
         }
 
-        public IServiceProvider Services => _serviceProvider.Value;
+        public IServiceProvider Services => this._serviceProvider.Value;
 
-        public void AddService<T>(T implementation)
-            => AddService<T, T>(implementation);
+        public void AddService<T>(T implementation) {
+            this.AddService<T, T>(implementation);
+        }
 
         public void AddService<TContract, TImplementation>(TImplementation implementation) where TImplementation: TContract
         {
-            if (_renderer.IsValueCreated)
+            if (this._renderer.IsValueCreated)
             {
                 throw new InvalidOperationException("Cannot configure services after the host has started operation");
             }
 
-            _serviceCollection.AddSingleton(typeof(TContract), implementation);
+            _ = this._serviceCollection.AddSingleton(typeof(TContract), implementation);
         }
 
         public void WaitForNextRender(Action trigger)
         {
-            System.Threading.Tasks.Task task = Renderer.NextRender;
+            System.Threading.Tasks.Task task = this.Renderer.NextRender;
             trigger();
-            task.Wait(millisecondsTimeout: 1000);
+            _ = task.Wait(millisecondsTimeout: 1000);
 
             if (!task.IsCompleted)
             {
@@ -55,23 +53,23 @@ namespace Microsoft.AspNetCore.Components.Testing
 
         public RenderedComponent<TComponent> AddComponent<TComponent>() where TComponent: IComponent
         {
-            RenderedComponent<TComponent> result = new RenderedComponent<TComponent>(Renderer);
+            RenderedComponent<TComponent> result = new RenderedComponent<TComponent>(this.Renderer);
             result.SetParametersAndRender(ParameterView.Empty);
             return result;
         }
 
         public RenderedComponent<TComponent> AddComponent<TComponent>(ParameterView parameters) where TComponent : IComponent
         {
-            RenderedComponent<TComponent> result = new RenderedComponent<TComponent>(Renderer);
+            RenderedComponent<TComponent> result = new RenderedComponent<TComponent>(this.Renderer);
             result.SetParametersAndRender(parameters);
             return result;
         }
 
         public RenderedComponent<TComponent> AddComponent<TComponent>(IDictionary<string, object> parameters) where TComponent : IComponent
         {
-            return AddComponent<TComponent>(ParameterView.FromDictionary(parameters));
+            return this.AddComponent<TComponent>(ParameterView.FromDictionary(parameters));
         }
 
-        private TestRenderer Renderer => _renderer.Value;
+        private TestRenderer Renderer => this._renderer.Value;
     }
 }

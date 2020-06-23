@@ -22,7 +22,7 @@
 
     protected override async Task OnInitializedAsync() {
         try {
-            this.Price = await this.fetchPrice();
+            //this.Price = await this.fetchPrice();
             this.startPeriodicRefresh();
         }
         catch (Exception e) {
@@ -44,6 +44,7 @@
         priceResponse.EnsureSuccessStatusCode();
         string responseBody = await priceResponse.Content.ReadAsStringAsync();
         BitcoinPriceWrapper bitcoinPriceWrapper = JsonConvert.DeserializeObject<BitcoinPriceWrapper>(responseBody);
-        return decimal.Parse(bitcoinPriceWrapper.Data.Amount);
+        decimal amount = decimal.Parse(bitcoinPriceWrapper.Data.Amount);
+        return amount;
     }
 }

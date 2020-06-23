@@ -14,29 +14,29 @@ namespace Microsoft.AspNetCore.Components.Testing
 
         internal RenderedComponent(TestRenderer renderer)
         {
-            _renderer = renderer;
-            _containerTestRootComponent = new ContainerComponent(_renderer);
+            this._renderer = renderer;
+            this._containerTestRootComponent = new ContainerComponent(this._renderer);
         }
 
-        public TComponent Instance => _testComponentInstance;
+        public TComponent Instance => this._testComponentInstance;
 
         public string GetMarkup()
         {
-            return Htmlizer.GetHtml(_renderer, _testComponentId);
+            return Htmlizer.GetHtml(this._renderer, this._testComponentId);
         }
 
         internal void SetParametersAndRender(ParameterView parameters)
         {
-            _containerTestRootComponent.RenderComponentUnderTest(
+            this._containerTestRootComponent.RenderComponentUnderTest(
                 typeof(TComponent), parameters);
-            (int, object) foundTestComponent = _containerTestRootComponent.FindComponentUnderTest();
-            _testComponentId = foundTestComponent.Item1;
-            _testComponentInstance = (TComponent)foundTestComponent.Item2;
+            (int, object) foundTestComponent = this._containerTestRootComponent.FindComponentUnderTest();
+            this._testComponentId = foundTestComponent.Item1;
+            this._testComponentInstance = (TComponent)foundTestComponent.Item2;
         }
 
         public HtmlNode Find(string selector)
         {
-            return FindAll(selector).FirstOrDefault();
+            return this.FindAll(selector).FirstOrDefault();
         }
 
         public ICollection<HtmlNode> FindAll(string selector)
@@ -48,8 +48,8 @@ namespace Microsoft.AspNetCore.Components.Testing
             // they are HTML strings so would need to be parsed, or perhaps you can
             // pass through those calls into Fizzler.Systems.HtmlAgilityPack.
 
-            string markup = GetMarkup();
-            TestHtmlDocument html = new TestHtmlDocument(_renderer);
+            string markup = this.GetMarkup();
+            TestHtmlDocument html = new TestHtmlDocument(this._renderer);
 
             html.LoadHtml(markup);
             return html.DocumentNode.QuerySelectorAll(selector).ToList();

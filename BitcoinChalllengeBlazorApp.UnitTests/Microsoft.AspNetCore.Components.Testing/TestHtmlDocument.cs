@@ -6,7 +6,7 @@ namespace Microsoft.AspNetCore.Components.Testing
     {
         public TestHtmlDocument(TestRenderer renderer)
         {
-            Renderer = renderer;
+            this.Renderer = renderer;
         }
 
         public TestRenderer Renderer { get; }

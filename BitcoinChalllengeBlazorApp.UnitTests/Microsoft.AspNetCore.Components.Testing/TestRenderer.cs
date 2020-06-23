@@ -19,49 +19,51 @@ namespace Microsoft.AspNetCore.Components.Testing
         {
         }
 
-        public new ArrayRange<RenderTreeFrame> GetCurrentRenderTreeFrames(int componentId)
-            => base.GetCurrentRenderTreeFrames(componentId);
+        public new ArrayRange<RenderTreeFrame> GetCurrentRenderTreeFrames(int componentId) {
+            return base.GetCurrentRenderTreeFrames(componentId);
+        }
 
-        public int AttachTestRootComponent(ContainerComponent testRootComponent)
-            => AssignRootComponentId(testRootComponent);
+        public int AttachTestRootComponent(ContainerComponent testRootComponent) {
+            return this.AssignRootComponentId(testRootComponent);
+        }
 
         public new Task DispatchEventAsync(ulong eventHandlerId, EventFieldInfo fieldInfo, EventArgs eventArgs)
         {
-            Task task = Dispatcher.InvokeAsync(
+            Task task = this.Dispatcher.InvokeAsync(
                 () => base.DispatchEventAsync(eventHandlerId, fieldInfo, eventArgs));
-            AssertNoSynchronousErrors();
+            this.AssertNoSynchronousErrors();
             return task;
         }
 
         public override Dispatcher Dispatcher { get; } = Dispatcher.CreateDefault();
 
-        public Task NextRender => _nextRenderTcs.Task;
+        public Task NextRender => this._nextRenderTcs.Task;
 
         protected override void HandleException(Exception exception)
         {
-            _unhandledException = exception;
+            this._unhandledException = exception;
         }
 
         protected override Task UpdateDisplayAsync(in RenderBatch renderBatch)
         {
             // TODO: Capture batches (and the state of component output) for individual inspection
-            TaskCompletionSource<object> prevTcs = _nextRenderTcs;
-            _nextRenderTcs = new TaskCompletionSource<object>();
+            TaskCompletionSource<object> prevTcs = this._nextRenderTcs;
+            this._nextRenderTcs = new TaskCompletionSource<object>();
             prevTcs.SetResult(null);
             return Task.CompletedTask;
         }
 
         public void DispatchAndAssertNoSynchronousErrors(Action callback)
         {
-            Dispatcher.InvokeAsync(callback).Wait();
-            AssertNoSynchronousErrors();
+            this.Dispatcher.InvokeAsync(callback).Wait();
+            this.AssertNoSynchronousErrors();
         }
 
         private void AssertNoSynchronousErrors()
         {
-            if (_unhandledException != null)
+            if (this._unhandledException != null)
             {
-                ExceptionDispatchInfo.Capture(_unhandledException).Throw();
+                ExceptionDispatchInfo.Capture(this._unhandledException).Throw();
             }
         }
     }

@@ -20,17 +20,17 @@ namespace Microsoft.AspNetCore.Components.Testing
     {
         private readonly TestRenderer _renderer;
         private RenderHandle _renderHandle;
-        private int _componentId;
+        private readonly int _componentId;
 
         public ContainerComponent(TestRenderer renderer)
         {
-            _renderer = renderer;
-            _componentId = renderer.AttachTestRootComponent(this);
+            this._renderer = renderer;
+            this._componentId = renderer.AttachTestRootComponent(this);
         }
 
         public void Attach(RenderHandle renderHandle)
         {
-            _renderHandle = renderHandle;
+            this._renderHandle = renderHandle;
         }
 
         public Task SetParametersAsync(ParameterView parameters)
@@ -40,7 +40,7 @@ namespace Microsoft.AspNetCore.Components.Testing
 
         public (int, object) FindComponentUnderTest()
         {
-            ArrayRange<RenderTreeFrame> ownFrames = _renderer.GetCurrentRenderTreeFrames(_componentId);
+            ArrayRange<RenderTreeFrame> ownFrames = this._renderer.GetCurrentRenderTreeFrames(this._componentId);
             if (ownFrames.Count == 0)
             {
                 throw new InvalidOperationException($"{nameof(ContainerComponent)} hasn't yet rendered");
@@ -54,20 +54,17 @@ namespace Microsoft.AspNetCore.Components.Testing
 
         public void RenderComponentUnderTest(Type componentType, ParameterView parameters)
         {
-            _renderer.DispatchAndAssertNoSynchronousErrors(() =>
-            {
-                _renderHandle.Render(builder =>
-                {
+            this._renderer.DispatchAndAssertNoSynchronousErrors(() => 
+                this._renderHandle.Render(builder => {
                     builder.OpenComponent(0, componentType);
 
-                    foreach (ParameterValue parameterValue in parameters)
-                    {
+                    foreach (ParameterValue parameterValue in parameters) {
                         builder.AddAttribute(1, parameterValue.Name, parameterValue.Value);
                     }
 
                     builder.CloseComponent();
-                });
-            });
+                })
+            );
         }
     }
 }

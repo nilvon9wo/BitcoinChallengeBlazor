@@ -23,16 +23,13 @@ namespace Microsoft.AspNetCore.Components.Testing
         {
             TaskCompletionSource<object> tcs = new TaskCompletionSource<object>();
 
-            handler.When(url).Respond(() =>
-            {
-                return tcs.Task.ContinueWith(task =>
-                {
-                    HttpResponseMessage response = new HttpResponseMessage(HttpStatusCode.OK);
-                    response.Content = new StringContent(JsonSerializer.Serialize(task.Result));
-                    response.Content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
-                    return response;
-                });
-            });
+            handler.When(url).Respond(() => tcs.Task.ContinueWith(task => {
+                HttpResponseMessage response = new HttpResponseMessage(HttpStatusCode.OK) {
+                    Content = new StringContent(JsonSerializer.Serialize(task.Result))
+                };
+                response.Content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+                return response;
+            }));
 
             return tcs;
         }

@@ -83,7 +83,7 @@ namespace Microsoft.AspNetCore.Components.Testing
         {
             ref RenderTreeFrame frame = ref frames.Array[position];
             ArrayRange<RenderTreeFrame> childFrames = context.Renderer.GetCurrentRenderTreeFrames(frame.ComponentId);
-            RenderFrames(context, childFrames, 0, childFrames.Count);
+            _ = RenderFrames(context, childFrames, 0, childFrames.Count);
             return position + frame.ComponentSubtreeLength;
         }
 
@@ -221,7 +221,7 @@ namespace Microsoft.AspNetCore.Components.Testing
         {
             public HtmlRenderingContext(TestRenderer renderer)
             {
-                Renderer = renderer;
+                this.Renderer = renderer;
             }
 
             public TestRenderer Renderer { get; }
