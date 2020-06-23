@@ -22,7 +22,7 @@ namespace BitcoinChalllengeBlazorApp.UnitTests {
         public void ItFetchesPriceAndSetsTheValue() {
             // Arrange
             _ = this.SetMockRuntime();
-            MockBitcoinMessageHandler mockHttpMessageHandler = this.CreateMockHttpClientAsync();
+            _ = this.CreateMockHttpClientAsync();
             _ = this.CreateSettings();
 
 
@@ -47,11 +47,11 @@ namespace BitcoinChalllengeBlazorApp.UnitTests {
             return jsRuntimeMock;
         }
 
-        private MockBitcoinMessageHandler CreateMockHttpClientAsync() {
+        private HttpClient CreateMockHttpClientAsync() {
             MockBitcoinMessageHandler mockHttpMessageHandler = new MockBitcoinMessageHandler(this.CreateMockResponse);
             HttpClient httpClient = new HttpClient(mockHttpMessageHandler);
             this.host.AddService(httpClient);
-            return mockHttpMessageHandler;
+            return httpClient;
         }
 
         private Task<HttpResponseMessage> CreateMockResponse() {
