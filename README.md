@@ -1,5 +1,7 @@
 ![Deploy to Github Pages](https://github.com/nilvon9wo/BitcoinChallengeBlazor/workflows/Deploy%20to%20Github%20Pages/badge.svg)
 
+[Working solution](https://nilvon9wo.github.io/BitcoinChallengeBlazor/)
+
 # Bitcoin Challenge Blazor
 
 ## Task 
