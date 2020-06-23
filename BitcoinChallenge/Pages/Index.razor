@@ -19,14 +19,18 @@
 
     protected override async Task OnInitializedAsync() {
         try {
-            HttpResponseMessage priceResponse = await Http.GetAsync(BitcoinPriceProvider);
-            priceResponse.EnsureSuccessStatusCode();
-            string responseBody = await priceResponse.Content.ReadAsStringAsync();
-            BitcoinPriceWrapper bitcoinPriceWrapper = JsonConvert.DeserializeObject<BitcoinPriceWrapper>(responseBody);
-            this.Price = decimal.Parse(bitcoinPriceWrapper.Data.Amount);
+            this.Price = await this.fetchPrice();
         }
         catch (Exception e) {
             await JSRuntime.InvokeAsync<object>("alert", e.ToString());
         }
+    }
+
+    private async Task<decimal> fetchPrice() {
+        HttpResponseMessage priceResponse = await Http.GetAsync(BitcoinPriceProvider);
+        priceResponse.EnsureSuccessStatusCode();
+        string responseBody = await priceResponse.Content.ReadAsStringAsync();
+        BitcoinPriceWrapper bitcoinPriceWrapper = JsonConvert.DeserializeObject<BitcoinPriceWrapper>(responseBody);
+        return decimal.Parse(bitcoinPriceWrapper.Data.Amount);
     }
 }
