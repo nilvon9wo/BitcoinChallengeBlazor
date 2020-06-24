@@ -10,7 +10,7 @@ namespace BitcoinChallengeBlazorApp.Services {
 
         public Timer Start(TimerCallback callback) {
             TimeSpan startTimeSpan = TimeSpan.Zero;
-            TimeSpan periodTimeSpan = TimeSpan.FromSeconds(RefreshTimeInSeconds);
+            TimeSpan periodTimeSpan = TimeSpan.FromSeconds(this.RefreshTimeInSeconds);
             return new Timer(callback, null, startTimeSpan, periodTimeSpan);
         }
     }

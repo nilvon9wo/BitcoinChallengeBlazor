@@ -24,9 +24,12 @@
 
     protected override async Task OnInitializedAsync() {
         try {
+            this.Price = await this.fetchPrice();
             _ = PeriodTimer.Start(async (e) => {
-                this.Price = await this.fetchPrice();
-                this.StateHasChanged();
+                await InvokeAsync(async () => {
+                    this.Price = await this.fetchPrice();
+                    this.StateHasChanged();
+                });
             });
         }
         catch (Exception e) {

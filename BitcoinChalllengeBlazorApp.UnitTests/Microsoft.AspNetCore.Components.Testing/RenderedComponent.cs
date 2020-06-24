@@ -10,7 +10,6 @@ namespace Microsoft.AspNetCore.Components.Testing
         private readonly TestRenderer _renderer;
         private readonly ContainerComponent _containerTestRootComponent;
         private int _testComponentId;
-        private TComponent _testComponentInstance;
 
         internal RenderedComponent(TestRenderer renderer)
         {
@@ -18,7 +17,7 @@ namespace Microsoft.AspNetCore.Components.Testing
             this._containerTestRootComponent = new ContainerComponent(this._renderer);
         }
 
-        public TComponent Instance => this._testComponentInstance;
+        public TComponent Instance { get; private set; }
 
         public string GetMarkup()
         {
@@ -31,7 +30,7 @@ namespace Microsoft.AspNetCore.Components.Testing
                 typeof(TComponent), parameters);
             (int, object) foundTestComponent = this._containerTestRootComponent.FindComponentUnderTest();
             this._testComponentId = foundTestComponent.Item1;
-            this._testComponentInstance = (TComponent)foundTestComponent.Item2;
+            this.Instance = (TComponent)foundTestComponent.Item2;
         }
 
         public HtmlNode Find(string selector)

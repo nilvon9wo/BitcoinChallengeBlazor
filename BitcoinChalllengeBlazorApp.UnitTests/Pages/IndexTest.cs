@@ -1,9 +1,11 @@
 using BitcoinChallenge.Entities;
 using BitcoinChallengeBlazorApp;
+using BitcoinChallengeBlazorApp.Services;
 using Microsoft.AspNetCore.Components.Testing;
 using Microsoft.JSInterop;
 using Moq;
 using Nancy.Json;
+using System;
 using System.Globalization;
 using System.Net;
 using System.Net.Http;
@@ -23,8 +25,7 @@ namespace BitcoinChalllengeBlazorApp.UnitTests {
             // Arrange
             _ = this.SetMockRuntime();
             _ = this.CreateMockHttpClientAsync();
-            _ = this.CreateSettings();
-
+            _ = this.CreateTimer();
 
             // Act
             RenderedComponent<Index> componentUnderTest = this.host.AddComponent<Index>();
@@ -68,13 +69,13 @@ namespace BitcoinChalllengeBlazorApp.UnitTests {
             return Task.FromResult(mockResponse);
         }
 
-        private BitcoinChallengeSettings CreateSettings() {
+        private PeriodicTimer CreateTimer() {
             AppSettings appSettings = new AppSettings {
                 RefreshTimeInSeconds = this.testRefreshRate
             };
-            BitcoinChallengeSettings bitcoinChallengeSettings = new BitcoinChallengeSettings(appSettings);
-            this.host.AddService(bitcoinChallengeSettings);
-            return bitcoinChallengeSettings;
+            PeriodicTimer timer = new PeriodicTimer(appSettings);
+            this.host.AddService(timer);
+            return timer;
         }
 
     }
