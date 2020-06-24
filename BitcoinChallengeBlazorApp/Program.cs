@@ -12,12 +12,14 @@ namespace BitcoinChallengeBlazorApp {
             WebAssemblyHostBuilder builder = WebAssemblyHostBuilder.CreateDefault(args);
             
             builder.RootComponents.Add<App>("app");
-            _ = builder.Services.AddTransient(sp => new HttpClient { 
-                BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) 
-            });
+            _ = builder.Services.AddTransient(
+                serviceProvide => new HttpClient { 
+                    BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) 
+                }
+            );
             _ = builder.Services.AddSingleton<PeriodicTimer>(
                 new PeriodicTimer(builder.Configuration.Get<AppSettings>())
-                );
+            );
             
             await builder.Build()
                 .RunAsync();

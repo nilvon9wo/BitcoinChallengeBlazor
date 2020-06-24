@@ -19,7 +19,7 @@
 
     private static readonly CultureInfo cultureInfo = new CultureInfo("de-DE", false);
 
-    public decimal Price { get; set; }
+    protected decimal Price { get; set; }
     protected string FormattedPrice => this.Price.ToString("c", cultureInfo);
 
     protected override async Task OnInitializedAsync() {

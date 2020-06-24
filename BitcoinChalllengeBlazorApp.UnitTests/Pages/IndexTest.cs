@@ -5,7 +5,6 @@ using Microsoft.AspNetCore.Components.Testing;
 using Microsoft.JSInterop;
 using Moq;
 using Nancy.Json;
-using System;
 using System.Globalization;
 using System.Net;
 using System.Net.Http;
