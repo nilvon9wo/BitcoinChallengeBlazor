@@ -1,11 +1,14 @@
 ﻿@page "/"
+@using BitcoinChallengeBlazorApp.Services;
+@using BitcoinChallenge.Entities;
 @using System.Globalization;
 @using System.Net.Http;
-@using BitcoinChallenge.Entities;
+@using System.Threading;
 @using Newtonsoft.Json;
 @inject BitcoinChallengeSettings BitcoinSettings;
 @inject HttpClient Http;
 @inject IJSRuntime JSRuntime;
+@inject PeriodicTimer PeriodTimer;
 
 <div class="card" style="width: 20rem;">
     <h5 class="card-title">Current price of one bitcoin</h5>
@@ -23,20 +26,17 @@
     protected override async Task OnInitializedAsync() {
         try {
             this.Price = await this.fetchPrice();
-            this.startPeriodicRefresh();
+            _ = this.startPeriodicRefresh();
         }
         catch (Exception e) {
             await JSRuntime.InvokeAsync<object>("alert", e.ToString());
         }
     }
 
-    private void startPeriodicRefresh() {
-        TimeSpan startTimeSpan = TimeSpan.Zero;
-        TimeSpan periodTimeSpan = TimeSpan.FromSeconds(BitcoinSettings.RefreshTimeInSeconds);
-
-        var timer = new System.Threading.Timer(async (e) => {
+    private Timer startPeriodicRefresh() {
+        return PeriodTimer.Start(BitcoinSettings.RefreshTimeInSeconds, async (e) => {
             this.Price = await this.fetchPrice();
-        }, null, startTimeSpan, periodTimeSpan);
+        });
     }
 
     private async Task<decimal> fetchPrice() {
@@ -44,7 +44,6 @@
         priceResponse.EnsureSuccessStatusCode();
         string responseBody = await priceResponse.Content.ReadAsStringAsync();
         BitcoinPriceWrapper bitcoinPriceWrapper = JsonConvert.DeserializeObject<BitcoinPriceWrapper>(responseBody);
-        decimal amount = decimal.Parse(bitcoinPriceWrapper.Data.Amount);
-        return amount;
+        return decimal.Parse(bitcoinPriceWrapper.Data.Amount);
     }
 }
