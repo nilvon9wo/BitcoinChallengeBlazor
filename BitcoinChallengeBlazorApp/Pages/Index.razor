@@ -1,47 +1,7 @@
 ﻿@page "/"
-@using BitcoinChallengeBlazorApp.Services;
-@using BitcoinChallenge.Entities;
-@using System.Globalization;
-@using System.Net.Http;
-@using System.Threading;
-@using Newtonsoft.Json;
-@inject HttpClient Http;
-@inject IJSRuntime JSRuntime;
-@inject PeriodicTimer PeriodTimer;
+@using BitcoinChallengeBlazorApp.Components;
 
 <div class="card" style="width: 20rem;">
     <h5 class="card-title">Current price of one bitcoin</h5>
-    <p>@FormattedPrice</p>
+    <BitcoinPrice></BitcoinPrice>
 </div>
-
-@code{
-    private const string BitcoinPriceProvider = "https://api.coinbase.com/v2/prices/spot?currency=EUR";
-
-    private static readonly CultureInfo cultureInfo = new CultureInfo("de-DE", false);
-
-    protected decimal Price { get; set; }
-    protected string FormattedPrice => this.Price.ToString("c", cultureInfo);
-
-    protected override async Task OnInitializedAsync() {
-        try {
-            this.Price = await this.fetchPrice();
-            _ = PeriodTimer.Start(async (e) => {
-                await InvokeAsync(async () => {
-                    this.Price = await this.fetchPrice();
-                    this.StateHasChanged();
-                });
-            });
-        }
-        catch (Exception e) {
-            await JSRuntime.InvokeAsync<object>("alert", e.ToString());
-        }
-    }
-
-    private async Task<decimal> fetchPrice() {
-        HttpResponseMessage priceResponse = await Http.GetAsync(BitcoinPriceProvider);
-        priceResponse.EnsureSuccessStatusCode();
-        string responseBody = await priceResponse.Content.ReadAsStringAsync();
-        BitcoinPriceWrapper bitcoinPriceWrapper = JsonConvert.DeserializeObject<BitcoinPriceWrapper>(responseBody);
-        return decimal.Parse(bitcoinPriceWrapper.Data.Amount);
-    }
-}
